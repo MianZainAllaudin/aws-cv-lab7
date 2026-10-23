@@ -1,0 +1,262 @@
+
+== caller ==
+{
+    "UserId": "AIDA4FXWABKYPXEMMYAWO",
+    "Account": "836960783024",
+    "Arn": "arn:aws:iam::836960783024:user/ZainAllaudin"
+}
+
+== public-access ==
+{
+    "PublicAccessBlockConfiguration": {
+        "BlockPublicAcls": true,
+        "IgnorePublicAcls": true,
+        "BlockPublicPolicy": true,
+        "RestrictPublicBuckets": true
+    }
+}
+
+== versioning ==
+{
+    "Status": "Enabled"
+}
+
+== objects ==
+2026-10-23 03:00:25          0 site/
+2026-10-23 03:05:34     708210 site/cv.pdf
+2026-10-23 03:05:30       1962 site/index.html
+2026-10-23 03:05:35        581 site/style.css
+
+== ec2-policy ==
+{
+    "RoleName": "cv-ec2-role-23l-3036",
+    "PolicyName": "cv-ec2-s3-read",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "ReadSiteObjectsOnly",
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObject"
+                ],
+                "Resource": "arn:aws:s3:::cv-23l-3036/site/*"
+            },
+            {
+                "Sid": "ListOnlySitePrefix",
+                "Effect": "Allow",
+                "Action": [
+                    "s3:ListBucket"
+                ],
+                "Resource": "arn:aws:s3:::cv-23l-3036",
+                "Condition": {
+                    "StringLike": {
+                        "s3:prefix": [
+                            "site/"
+                        ]
+                    }
+                }
+            }
+        ]
+    }
+}
+
+== lambda-policy ==
+{
+    "AttachedPolicies": []
+}
+{
+    "RoleName": "cv-lambda-role-23l-3036",
+    "PolicyName": "cv-lambda-s3-read",
+    "PolicyDocument": {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Sid": "ReadSiteObjectsOnly",
+                "Effect": "Allow",
+                "Action": [
+                    "s3:GetObject"
+                ],
+                "Resource": "arn:aws:s3:::cv-23l-3036/site/*"
+            },
+            {
+                "Sid": "AWSLambdaBasicExecutionRolePermissions",
+                "Effect": "Allow",
+                "Action": [
+                    "logs:CreateLogGroup",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ],
+                "Resource": "arn:aws:logs:*:*:*"
+            }
+        ]
+    }
+}
+
+== security-group ==
+{
+    "SecurityGroups": [
+        {
+            "GroupId": "sg-0fa2be17920d1a101",
+            "IpPermissionsEgress": [
+                {
+                    "IpProtocol": "-1",
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ],
+            "VpcId": "vpc-0c5017f5080544940",
+            "SecurityGroupArn": "arn:aws:ec2:ap-southeast-2:836960783024:security-group/sg-0fa2be17920d1a101",
+            "OwnerId": "836960783024",
+            "GroupName": "launch-wizard-1",
+            "Description": "launch-wizard-1 created 2026-10-23T18:47:31.064Z",
+            "IpPermissions": [
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 80,
+                    "ToPort": 80,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "0.0.0.0/0"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                },
+                {
+                    "IpProtocol": "tcp",
+                    "FromPort": 22,
+                    "ToPort": 22,
+                    "UserIdGroupPairs": [],
+                    "IpRanges": [
+                        {
+                            "CidrIp": "202.1.27.142/32"
+                        }
+                    ],
+                    "Ipv6Ranges": [],
+                    "PrefixListIds": []
+                }
+            ]
+        }
+    ]
+}
+
+== instance ==
+[
+    {
+        "Id": "i-0de784cb185cc9585",
+        "Type": "t3.micro",
+        "State": "running",
+        "PublicIp": "52.65.28.28",
+        "MetadataOptions": {
+            "State": "applied",
+            "HttpTokens": "required",
+            "HttpPutResponseHopLimit": 2,
+            "HttpEndpoint": "enabled",
+            "HttpProtocolIpv6": "disabled",
+            "InstanceMetadataTags": "disabled"
+        },
+        "Profile": "arn:aws:iam::836960783024:instance-profile/cv-ec2-role-23l-3036",
+        "Tags": [
+            {
+                "Key": "Course",
+                "Value": "cloud"
+            },
+            {
+                "Key": "Owner",
+                "Value": "23L-3036"
+            },
+            {
+                "Key": "Name",
+                "Value": "cv-ec2-23l-3036"
+            }
+        ]
+    }
+]
+
+== endpoints ==
+--- http://52.65.28.28/
+http_code=200 content_type=text/html
+--- https://on.aws/
+curl: (6) Could not resolve host: on.aws
+http_code=000 content_type=
+curl failed
+--- https://cv-23l-3036.s3.ap-southeast-2.amazonaws.com/site/index.html
+http_code=403 content_type=application/xml
+
+== lambda-logs ==
+2026-10-23T20:15:48.038000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c INIT_START Runtime Version: python:3.14.mainline.v75	Runtime Version ARN: arn:aws:lambda:ap-southeast-2::runtime:ab559f26fdef82cfdfbb2942d07b46f84b45b52d0d760d3d623001ab0218052e
+2026-10-23T20:15:48.372000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [INFO]	2026-10-23T20:15:48.372Z		Found credentials in environment variables.
+2026-10-23T20:15:48.539000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [WARNING]	2026-10-23T20:15:48.539Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+2026-10-23T20:15:48.539000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [ERROR] Runtime.HandlerNotFound: Handler 'lambda_handler' missing on module 'lambda_function'
+Traceback (most recent call last):
+2026-10-23T20:15:48.665000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c INIT_REPORT Init Duration: 627.26 ms	Phase: init	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:15:48.995000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [INFO]	2026-10-23T20:15:48.995Z		Found credentials in environment variables.
+2026-10-23T20:15:49.095000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [WARNING]	2026-10-23T20:15:49.094Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+2026-10-23T20:15:49.095000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [ERROR] Runtime.HandlerNotFound: Handler 'lambda_handler' missing on module 'lambda_function'
+Traceback (most recent call last):
+2026-10-23T20:15:49.207000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c INIT_REPORT Init Duration: 523.27 ms	Phase: invoke	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:15:49.207000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c START RequestId: 6c1f7626-f239-4937-9132-3263e2705087 Version: $LATEST
+2026-10-23T20:15:49.217000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c END RequestId: 6c1f7626-f239-4937-9132-3263e2705087
+2026-10-23T20:15:49.217000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c REPORT RequestId: 6c1f7626-f239-4937-9132-3263e2705087	Duration: 538.96 ms	Billed Duration: 539 ms	Memory Size: 128 MB	Max Memory Used: 101 MB	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:15:50.113000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [INFO]	2026-10-23T20:15:50.113Z		Found credentials in environment variables.
+2026-10-23T20:15:50.209000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [WARNING]	2026-10-23T20:15:50.208Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+2026-10-23T20:15:50.209000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [ERROR] Runtime.HandlerNotFound: Handler 'lambda_handler' missing on module 'lambda_function'
+Traceback (most recent call last):
+2026-10-23T20:15:50.334000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c INIT_REPORT Init Duration: 453.78 ms	Phase: invoke	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:15:50.334000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c START RequestId: 1f0c00c7-d8d1-4c59-9757-8ace64ae1786 Version: $LATEST
+2026-10-23T20:15:50.349000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c END RequestId: 1f0c00c7-d8d1-4c59-9757-8ace64ae1786
+2026-10-23T20:15:50.349000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c REPORT RequestId: 1f0c00c7-d8d1-4c59-9757-8ace64ae1786	Duration: 474.19 ms	Billed Duration: 475 ms	Memory Size: 128 MB	Max Memory Used: 100 MB	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:17:32.770000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [INFO]	2026-10-23T20:17:32.769Z		Found credentials in environment variables.
+2026-10-23T20:17:32.870000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [WARNING]	2026-10-23T20:17:32.870Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+2026-10-23T20:17:32.871000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [ERROR] Runtime.HandlerNotFound: Handler 'lambda_handler' missing on module 'lambda_function'
+Traceback (most recent call last):
+2026-10-23T20:17:32.979000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c INIT_REPORT Init Duration: 441.96 ms	Phase: invoke	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:17:32.979000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c START RequestId: 1d815e5b-3c81-4a58-a195-5b5045a8ab9c Version: $LATEST
+2026-10-23T20:17:32.989000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c END RequestId: 1d815e5b-3c81-4a58-a195-5b5045a8ab9c
+2026-10-23T20:17:32.989000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c REPORT RequestId: 1d815e5b-3c81-4a58-a195-5b5045a8ab9c	Duration: 457.65 ms	Billed Duration: 458 ms	Memory Size: 128 MB	Max Memory Used: 100 MB	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:17:33.551000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [INFO]	2026-10-23T20:17:33.551Z		Found credentials in environment variables.
+2026-10-23T20:17:33.650000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [WARNING]	2026-10-23T20:17:33.650Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+2026-10-23T20:17:33.650000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [ERROR] Runtime.HandlerNotFound: Handler 'lambda_handler' missing on module 'lambda_function'
+Traceback (most recent call last):
+2026-10-23T20:17:33.758000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c INIT_REPORT Init Duration: 437.05 ms	Phase: invoke	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:17:33.758000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c START RequestId: c6453b5f-110c-48d7-b5ae-85c4a2cb7d2b Version: $LATEST
+2026-10-23T20:17:33.768000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c END RequestId: c6453b5f-110c-48d7-b5ae-85c4a2cb7d2b
+2026-10-23T20:17:33.768000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c REPORT RequestId: c6453b5f-110c-48d7-b5ae-85c4a2cb7d2b	Duration: 452.62 ms	Billed Duration: 453 ms	Memory Size: 128 MB	Max Memory Used: 100 MB	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:22:47.622000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [INFO]	2026-10-23T20:22:47.622Z		Found credentials in environment variables.
+2026-10-23T20:22:47.719000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [WARNING]	2026-10-23T20:22:47.719Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
+2026-10-23T20:22:47.719000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c [ERROR] Runtime.HandlerNotFound: Handler 'lambda_handler' missing on module 'lambda_function'
+Traceback (most recent call last):
+2026-10-23T20:22:47.827000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c INIT_REPORT Init Duration: 437.70 ms	Phase: invoke	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:22:47.827000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c START RequestId: 38e1ccf5-2b2a-460d-bb49-df6caef5236b Version: $LATEST
+2026-10-23T20:22:47.837000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c END RequestId: 38e1ccf5-2b2a-460d-bb49-df6caef5236b
+2026-10-23T20:22:47.837000+00:00 2026/10/23/[$LATEST]22a909e93431450d86a2569dae9cb54c REPORT RequestId: 38e1ccf5-2b2a-460d-bb49-df6caef5236b	Duration: 455.71 ms	Billed Duration: 456 ms	Memory Size: 128 MB	Max Memory Used: 99 MB	Status: error	Error Type: Runtime.HandlerNotFound
+2026-10-23T20:26:08.349000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 INIT_START Runtime Version: python:3.14.mainline.v75	Runtime Version ARN: arn:aws:lambda:ap-southeast-2::runtime:ab559f26fdef82cfdfbb2942d07b46f84b45b52d0d760d3d623001ab0218052e
+2026-10-23T20:26:08.696000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 [INFO]	2026-10-23T20:26:08.696Z		Found credentials in environment variables.
+2026-10-23T20:26:08.870000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 START RequestId: 83369791-0c2d-4ce0-bdc2-01b4fe6a1a55 Version: $LATEST
+2026-10-23T20:26:09.162000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 [INFO]	2026-10-23T20:26:09.162Z	83369791-0c2d-4ce0-bdc2-01b4fe6a1a55	{"fn": "cv-func-23l-3036", "path": "/", "status": 200, "ms": 291}
+2026-10-23T20:26:09.182000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 END RequestId: 83369791-0c2d-4ce0-bdc2-01b4fe6a1a55
+2026-10-23T20:26:09.182000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 REPORT RequestId: 83369791-0c2d-4ce0-bdc2-01b4fe6a1a55	Duration: 311.64 ms	Billed Duration: 829 ms	Memory Size: 128 MB	Max Memory Used: 101 MB	Init Duration: 517.07 ms
+2026-10-23T20:26:09.476000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 START RequestId: b0ed709c-2e5f-4ba4-8d38-23e5f025414b Version: $LATEST
+2026-10-23T20:26:09.505000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 [INFO]	2026-10-23T20:26:09.505Z	b0ed709c-2e5f-4ba4-8d38-23e5f025414b	{"fn": "cv-func-23l-3036", "path": "/style.css", "status": 200, "ms": 28}
+2026-10-23T20:26:09.522000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 END RequestId: b0ed709c-2e5f-4ba4-8d38-23e5f025414b
+2026-10-23T20:26:09.522000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 REPORT RequestId: b0ed709c-2e5f-4ba4-8d38-23e5f025414b	Duration: 45.51 ms	Billed Duration: 46 ms	Memory Size: 128 MB	Max Memory Used: 101 MB
+2026-10-23T20:26:09.852000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 START RequestId: 28429328-e27d-45c5-b5cd-b1d44fc68a31 Version: $LATEST
+2026-10-23T20:26:09.853000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 [INFO]	2026-10-23T20:26:09.853Z	28429328-e27d-45c5-b5cd-b1d44fc68a31	{"fn": "cv-func-23l-3036", "path": "/favicon.ico", "status": 404, "ms": 0}
+2026-10-23T20:26:09.855000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 END RequestId: 28429328-e27d-45c5-b5cd-b1d44fc68a31
+2026-10-23T20:26:09.861000+00:00 2026/10/23/[$LATEST]9d058fe98c9242aab8f9f5f2540f2155 REPORT RequestId: 28429328-e27d-45c5-b5cd-b1d44fc68a31	Duration: 1.69 ms	Billed Duration: 2 ms	Memory Size: 128 MB	Max Memory Used: 101 MB
+
+== log-retention ==
+[
+    {
+        "name": "/aws/lambda/cv-func-23l-3036",
+        "retentionInDays": 7
+    }
+]
